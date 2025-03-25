@@ -1,0 +1,248 @@
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.container {
+    max-width: 1500px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    padding: 0;
+    margin-top: 32px;
+    margin-bottom: 40px;
+}
+
+.card-header {
+    background-color: #ffffff;
+    color: #212529;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    padding: 25px 30px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-body {
+    padding: 25px 30px;
+}
+
+.btn-primary {
+    background-color: #4f46e5;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+}
+
+table.dataTable {
+    border-collapse: collapse !important;
+    border-spacing: 0;
+    width: 100%;
+    border: none;
+}
+
+table.dataTable thead th {
+    background-color: #fafafa;
+    color: #6b7280;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+table.dataTable tbody tr {
+    transition: all 0.2s ease;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+table.dataTable tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    color: #374151;
+    font-size: 14px;
+}
+
+.action-icons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-start;
+}
+
+.action-icons i {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-icons .edit {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.action-icons .edit:hover {
+    color: #4f46e5;
+}
+
+.action-icons .delete {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.action-icons .delete:hover {
+    color: #ef4444;
+}
+
+/* DataTable custom styling */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px;
+    padding: 5px 12px !important;
+    margin: 0 3px;
+    color: #6b7280 !important;
+    background: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    opacity: 0.5;
+}
+
+/* Modal styling */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    padding: 25px 25px 15px;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: #212529;
+    font-size: 20px;
+}
+
+.modal-body {
+    padding: 0 25px 25px;
+}
+
+.btn-close {
+    background-size: 0.8em;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.btn-close:hover {
+    opacity: 0.8;
+    transform: rotate(90deg);
+}
+
+/* Form controls */
+.form-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.focus-ring:focus {
+    outline: none;
+}
+
+/* Button styling */
+.btn-light {
+    background-color: #f3f4f6;
+    border: none;
+    color: #4b5563;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-light:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-primary {
+    background-color: #4f46e5;
+    border: none;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+}
