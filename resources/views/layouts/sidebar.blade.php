@@ -18,7 +18,7 @@
             <li class="menu-header">Manajemen</li>
             <li class="nav-item">
                 <a href="{{ route('karyawan.index') }}" class="nav-link"><i
-                        class="fas fa-users"></i><span>user</span></a>
+                        class="fas fa-users"></i><span>Karyawan</span></a>
             </li>
 
             <!-- Add more menu items as needed -->
