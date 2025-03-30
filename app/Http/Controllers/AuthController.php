@@ -71,16 +71,12 @@ class AuthController extends Controller
             'posisi' => 'required|string|max:255',
             'departemen' => 'required|string|max:255',
         ], [
-            'user_id.unique' => 'User ini sudah terdaftar !',
+            'user_id.unique' => 'User ini sudah terdaftar!',
         ]);
 
-        Karyawan::create([
-            'user_id' => $request->user_id,
-            'posisi' => $request->posisi,
-            'departemen' => $request->departemen,
-        ]);
+        Karyawan::create($request->all());
 
-        return redirect()->back()->with('success', 'Data karyawan berhasil ditambahkan!');
+        return back()->with('success', 'Data karyawan berhasil disimpan!');
     }
 
     public function destroykaryawan($id)
@@ -151,5 +147,27 @@ class AuthController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Data karyawan berhasil diperbarui.');
+    }
+    public function updatekaryawan(Request $request, $user_id)
+    {
+        // Validasi input
+        $request->validate([
+            'user_id' => 'required|exists:users,user_id',
+            'posisi' => 'required|string|max:255',
+            'departemen' => 'required|string|max:255',
+        ]);
+
+        // Cek apakah karyawan dengan user_id ada
+        $karyawan = Karyawan::where('user_id', $user_id)->firstOrFail();
+
+        // Update data karyawan
+        $karyawan->update([
+            'user_id' => $request->user_id,
+            'posisi' => $request->posisi,
+            'departemen' => $request->departemen,
+        ]);
+
+        // Redirect kembali ke halaman karyawan
+        return redirect('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
     }
 }

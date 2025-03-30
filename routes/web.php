@@ -32,12 +32,23 @@ Route::get('/karyawan', function () {
     $karyawans = Karyawan::all();
     return view('admin.karyawan', compact('users', 'karyawans',)); // Kirim variabel $users ke view
 });
+Route::get('/editregister/{id}', function ($id) {
+    $user = User::findOrFail($id); // Ambil data user berdasarkan ID
+    return view('auth.editregister', compact('user'));
+});
+Route::get('/editkaryawan/{id}', function ($id) {
+    $karyawan = Karyawan::where('user_id', $id)->with('user')->firstOrFail();
+    $users = User::all();
+    return view('admin.editkaryawan', compact('karyawan', 'users')); // Kirim variabel $users ke view
+});
+
+
 
 
 //ROUTE UNTUK PROSES PADA HALAMAN
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::post('/login', [AuthController::class, 'loginproses'])->name('login.post');
-Route::post('/insert-karyawan/store', [AuthController::class, 'insertkaryawan'])->name('insertkaryawan.store');
+Route::post('/karyawan', [AuthController::class, 'insertkaryawan'])->name('karyawan.insertkaryawan');
 Route::post('/absen-datang', [AbsenController::class, 'absenDatang'])->name('absen.datang');
 Route::post('/absen-pulang', [AbsenController::class, 'absenPulang'])->name('absen.pulang');
 
@@ -47,5 +58,6 @@ Route::delete('/hapus-user/{id}', [AuthController::class, 'userdestroy'])->name(
 Route::delete('/hapus-karyawan/{id}', [AuthController::class, 'destroykaryawan']);
 
 //ROUTE UNTUK EDIT
-Route::put('/karyawan/update/{id}', [AuthController::class, 'update'])->name('karyawan.update');
+Route::put('/updatekaryawan/{user_id}', [AuthController::class, 'updatekaryawan'])->name('karyawan.updatekaryawan');
+
 Route::put('/users/{id}', [AuthController::class, 'userupdate'])->name('users.userupdate');

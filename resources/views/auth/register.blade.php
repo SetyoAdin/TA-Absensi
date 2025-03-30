@@ -294,6 +294,7 @@
                                 <td class="action-icons">
                                     <i class="edit fa-solid fa-pen" title="Edit"
                                         data-user='@json($user)' style="cursor: pointer;"></i>
+
                                     <i class="delete fa-solid fa-trash" title="Hapus"
                                         data-url="{{ route('hapus-user', ['id' => $user->user_id]) }}"></i>
                                 </td>
@@ -464,29 +465,21 @@
             }
         });
 
-
-        // HANDLE MODAL EDIT
         document.addEventListener("DOMContentLoaded", function() {
-            // Ambil semua ikon edit
             document.querySelectorAll('.edit').forEach(icon => {
                 icon.addEventListener('click', function() {
-                    // Ambil data user dari atribut data-user
-                    let user = JSON.parse(this.getAttribute('data-user'));
+                    let user = this.getAttribute('data-user');
 
-                    // Isi data ke dalam modal
-                    document.getElementById('edit_user_id').value = user.id;
-                    document.getElementById('edit_name').value = user.name;
-                    document.getElementById('edit_email').value = user.email;
-                    document.getElementById('edit_role').value = user.role;
-
-                    // Atur action form agar sesuai dengan ID user
-                    let form = document.getElementById('editUserForm');
-                    form.action = form.action.replace(':id', user.id);
-
-                    // Tampilkan modal
-                    let editUserModal = new bootstrap.Modal(document.getElementById(
-                        'editUserModal'));
-                    editUserModal.show();
+                    try {
+                        user = JSON.parse(user); // Parse JSON dari atribut data-user
+                        if (user && user.id) {
+                            window.location.href = `/editregister/${user.id}`;
+                        } else {
+                            console.error("User ID tidak ditemukan!", user);
+                        }
+                    } catch (error) {
+                        console.error("Gagal mem-parsing data user:", error);
+                    }
                 });
             });
         });
