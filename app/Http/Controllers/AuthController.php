@@ -10,10 +10,26 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 
 class AuthController extends Controller
 {
+    public function regist()
+    {
+        $users = User::all();
+        return view('auth.register', compact('users'));
+    }
+    public function karyawan()
+    {
+        $users = User::all();
+        $karyawans = Karyawan::all();
+        return view('admin.karyawan', compact('users', 'karyawans'));
+    }
+
+
+
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -169,5 +185,14 @@ class AuthController extends Controller
 
         // Redirect kembali ke halaman karyawan
         return redirect('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout(); // Logout user
+        Session::flush(); // Hapus semua session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login')->with('success', 'Anda telah logout.');
     }
 }

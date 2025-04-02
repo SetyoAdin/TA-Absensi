@@ -1,415 +1,525 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.main') {{-- Gunakan template utama --}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen User</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@section('title', 'Kelola Pengguna') {{-- Set title --}}
 
+@section('content')
     <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-section: #1e1e1e;
+            --dark-input: #2d2d2d;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --warning-hover: #d97706;
+            --success: #10b981;
+            --border-color: #2d2d2d;
+        }
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
         }
 
-        .container {
-            max-width: 1500px;
-        }
-
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            background: #ffffff;
-            padding: 0;
-            margin-top: 32px;
-            margin-bottom: 40px;
-        }
-
-        .card-header {
-            background-color: #ffffff;
-            color: #212529;
-            font-size: 20px;
+        /* Section headers */
+        .section-header {
             font-weight: 600;
-            text-align: left;
-            padding: 25px 30px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            border-radius: 12px 12px 0 0 !important;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .card-body {
-            padding: 25px 30px;
+        /* Form section */
+        .form-section {
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary {
-            background-color: #4f46e5;
-            border: none;
-            border-radius: 6px;
-            font-weight: 500;
-            padding: 8px 16px;
-            transition: all 0.2s ease;
+        /* Table section */
+        .table-section {
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary:hover {
-            background-color: #4338ca;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
-        }
-
-        table.dataTable {
-            border-collapse: collapse !important;
-            border-spacing: 0;
-            width: 100%;
-            border: none;
-        }
-
-        table.dataTable thead th {
-            background-color: #fafafa;
-            color: #6b7280;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 14px 16px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        table.dataTable tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        table.dataTable tbody tr:hover {
-            background-color: #f9fafb;
-        }
-
-        table.dataTable tbody td {
-            padding: 16px;
-            vertical-align: middle;
-            border-bottom: 1px solid #f0f0f0;
-            color: #374151;
-            font-size: 14px;
-        }
-
-        .action-icons {
+        /* Form layout with columns */
+        .form-row {
             display: flex;
-            gap: 16px;
-            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-right: -10px;
+            margin-left: -10px;
         }
 
-        .action-icons i {
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .action-icons .edit {
-            color: #6b7280;
-            font-size: 15px;
-        }
-
-        .action-icons .edit:hover {
-            color: #4f46e5;
-        }
-
-        .action-icons .delete {
-            color: #6b7280;
-            font-size: 15px;
-        }
-
-        .action-icons .delete:hover {
-            color: #ef4444;
-        }
-
-        /* DataTable custom styling */
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_filter,
-        .dataTables_wrapper .dataTables_info,
-        .dataTables_wrapper .dataTables_processing,
-        .dataTables_wrapper .dataTables_paginate {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .dataTables_wrapper .dataTables_filter input {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 5px 10px;
-            margin-left: 8px;
-        }
-
-        .dataTables_wrapper .dataTables_filter input:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-        }
-
-        .dataTables_wrapper .dataTables_length select {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 5px 10px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            border: 1px solid #e5e7eb !important;
-            border-radius: 6px;
-            padding: 5px 12px !important;
-            margin: 0 3px;
-            color: #6b7280 !important;
-            background: #ffffff !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: #f3f4f6 !important;
-            border-color: #d1d5db !important;
-            color: #111827 !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-            opacity: 0.5;
-        }
-
-        /* Modal styling */
-        .modal-content {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            padding: 25px 25px 15px;
-        }
-
-        .modal-title {
-            font-weight: 600;
-            color: #212529;
-            font-size: 20px;
-        }
-
-        .modal-body {
-            padding: 0 25px 25px;
-        }
-
-        .btn-close {
-            background-size: 0.8em;
-            opacity: 0.5;
-            transition: all 0.2s;
-        }
-
-        .btn-close:hover {
-            opacity: 0.8;
-            transform: rotate(90deg);
+        .form-col {
+            flex: 0 0 100%;
+            padding-right: 10px;
+            padding-left: 10px;
+            margin-bottom: 15px;
         }
 
         /* Form controls */
-        .form-label {
-            font-weight: 500;
-            font-size: 14px;
-            color: #6b7280;
-        }
-
         .form-control,
-        .form-select {
-            border: 1px solid #e5e7eb;
+        select.form-control {
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
             border-radius: 6px;
-            padding: 10px 12px;
-            font-size: 14px;
-            transition: all 0.2s;
+            padding: 10px 14px;
+            transition: all 0.2s ease;
+            width: 100%;
+            height: auto;
         }
 
         .form-control:focus,
-        .form-select:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        select.form-control:focus {
+            background-color: var(--dark-input);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            color: var(--text-primary);
         }
 
-        .focus-ring:focus {
-            outline: none;
-        }
-
-        /* Button styling */
-        .btn-light {
-            background-color: #f3f4f6;
-            border: none;
-            color: #4b5563;
+        .form-label {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
             font-weight: 500;
-            border-radius: 6px;
-            transition: all 0.2s;
+            display: block;
         }
 
-        .btn-light:hover {
-            background-color: #e5e7eb;
+        option {
+            background-color: var(--dark-input);
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .btn-primary {
-            background-color: #4f46e5;
-            border: none;
-            font-weight: 500;
-            border-radius: 6px;
-            transition: all 0.2s;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
         }
 
         .btn-primary:hover {
-            background-color: #4338ca;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-hover);
+            border-color: var(--warning-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+            border-color: var(--danger-hover);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.875rem;
+        }
+
+        /* Form action buttons */
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Table styling */
+        .table {
+            color: var(--text-primary);
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 0;
+        }
+
+        .table-bordered {
+            border: none;
+        }
+
+        .table thead th {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Alert styling */
+        .alert {
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        /* Main container styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        .page-title {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin: 30px 0;
+            font-size: 1.75rem;
+        }
+
+        /* Action buttons spacing */
+        td .btn {
+            margin-right: 5px;
+        }
+
+        /* Adding soft transitions */
+        * {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Form group margin */
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        /* Make table responsive */
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+        }
+
+        /* Animation for alerts */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dataTables_filter {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .dataTables_filter input {
+            width: 180px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .dataTables_filter input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 4px rgba(99, 102, 241, 0.4);
+        }
+
+        /* NEW RESPONSIVE IMPROVEMENTS */
+
+        /* Enhanced media queries for better granularity */
+        @media (min-width: 576px) {
+            .form-col-sm-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .form-col-md-4 {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
+
+            .form-col-md-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        @media (max-width: 767px) {
+
+            /* Adjustments for mobile view */
+            .page-title {
+                font-size: 1.5rem;
+                margin: 20px 0;
+            }
+
+            .section-header {
+                font-size: 1.1rem;
+            }
+
+            .form-section,
+            .table-section {
+                padding: 15px;
+            }
+
+            .form-actions {
+                justify-content: center;
+            }
+
+            /* Make buttons more touch-friendly on mobile */
+            .btn {
+                padding: 10px 14px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Stack action buttons on small screens */
+            td .btn {
+                margin-bottom: 5px;
+                margin-right: 3px;
+            }
+
+            /* DataTables mobile improvements */
+            .dataTables_filter {
+                margin-bottom: 10px;
+            }
+
+            .dataTables_filter input {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .dataTables_length {
+                text-align: left;
+                margin-bottom: 10px;
+            }
+
+            .dataTables_length select {
+                padding: 6px 10px;
+                border-radius: 6px;
+                background-color: var(--dark-input);
+                border: 1px solid var(--border-color);
+                color: var(--text-primary);
+            }
+        }
+
+        /* Fix font size on smaller screens */
+        @media (max-width: 480px) {
+            html {
+                font-size: 14px;
+            }
+
+            .table thead th {
+                padding: 10px 8px;
+                font-size: 0.7rem;
+            }
+
+            .table tbody td {
+                padding: 10px 8px;
+            }
+
+            /* Fix button spacing on small screens */
+            td .btn {
+                margin-right: 2px;
+                padding: 6px 8px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Helper class for wrapping button containers on mobile */
+        .d-flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
         }
     </style>
-</head>
+    <main class="h-full pb-16 overflow-y-auto">
+        <div class="container px-6 mx-auto grid">
+            <h2 class="page-title">
+                Manajemen Pengguna
+            </h2>
 
-<body>
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">Manajemen User</div>
-            <div class="card-body">
-                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#dataModal">
-                    <i class="fas fa-plus-circle me-2"></i>Tambah Data
-                </button>
-                <table id="karyawanTable" class="display table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Tanggal Daftar</th>
-                            <th>Di Edit Pada</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $user)
-                            <tr>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ ucfirst($user->role) }}</td>
-                                <td>{{ $user->created_at->format('d M Y') }}</td>
-                                <td>{{ $user->updated_at->format('d M Y') }}</td>
-                                <td class="action-icons">
-                                    <i class="edit fa-solid fa-pen" title="Edit"
-                                        data-user='@json($user)' style="cursor: pointer;"></i>
-
-                                    <i class="delete fa-solid fa-trash" title="Hapus"
-                                        data-url="{{ route('hapus-user', ['id' => $user->user_id]) }}"></i>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit -->
-    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title" id="editUserModalLabel">Edit Data Karyawan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body pt-3">
-                    <form id="editUserForm" method="POST" action="{{ route('users.userupdate', ':id') }}">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" id="edit_user_id" name="user_id">
-
-                        <div class="mb-3">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2 class="section-header">Tambah Pengguna</h2>
+                <form action="{{ route('register.store') }}" method="POST">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-col form-col-md-6">
                             <label class="form-label">Nama</label>
-                            <input type="text" name="name" id="edit_name" class="form-control" required>
+                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-col form-col-md-6">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" id="edit_email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control">
-                            <small class="text-muted">Biarkan kosong jika tidak ingin mengubah password</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select name="role" id="edit_role" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="karyawan">Karyawan</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-
-                        <div class="text-end mt-4 pt-2">
-                            <button type="button" class="btn btn-light me-2 px-4"
-                                data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary px-4">Simpan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah -->
-    <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title" id="dataModalLabel">Tambah Pengguna</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body pt-3">
-                    <form action="{{ route('register.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
+                    <div class="form-row">
+                        <div class="form-col form-col-md-6">
                             <label class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="form-col form-col-md-6">
                             <label class="form-label">Konfirmasi Password</label>
                             <input type="password" name="password_confirmation" class="form-control" required>
                         </div>
+                    </div>
 
-                        <div class="mb-3">
+                    <div class="form-row">
+                        <div class="form-col">
                             <label class="form-label">Role</label>
                             <select name="role" class="form-control" required>
                                 <option value="">Pilih Role</option>
-                                <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan
-                                </option>
+                                <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             </select>
                         </div>
+                    </div>
 
-                        <div class="text-end mt-4 pt-2">
-                            <button type="button" class="btn btn-light me-2 px-4"
-                                data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary px-4">Register</button>
-                        </div>
-                    </form>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-section">
+                <h2 class="section-header">Daftars User</h2>
+                <div class="table-responsive">
+                    <table id="karyawanTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Tanggal Daftar</th>
+                                <th>Di Edit Pada</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ ucfirst($user->role) }}</td>
+                                    <td>{{ $user->created_at->format('d M Y') }}</td>
+                                    <td>{{ $user->updated_at->format('d M Y') }}</td>
+                                    <td>
+                                        <div class="d-flex flex-wrap">
+                                            <button class="btn btn-warning btn-sm edit" title="Edit"
+                                                data-user='@json($user)'>
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm delete" title="Hapus"
+                                                data-url="{{ route('hapus-user', ['id' => $user->user_id]) }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+@endsection
 
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#karyawanTable').DataTable({
@@ -431,59 +541,5 @@
                 }
             });
         });
-
-        // HANDLE DELETE USER
-        $(document).on('click', '.delete', function() {
-            let url = $(this).data('url'); // Ambil URL dari data-url
-            let button = $(this);
-
-            if (confirm("Apakah Anda yakin ingin menghapus pengguna ini?")) {
-                button.prop("disabled", true); // Hindari double-click
-
-                $.ajax({
-                    url: url, // Gunakan URL dari Blade
-                    type: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    success: function(response) {
-                        alert(response.message);
-                        button.closest("tr").fadeOut(300, function() {
-                            $(this).remove();
-                        });
-                    },
-                    error: function(xhr) {
-                        let errorMessage = "Terjadi kesalahan saat menghapus data.";
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-                        alert(errorMessage);
-                        button.prop("disabled", false);
-                    }
-                });
-            }
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.edit').forEach(icon => {
-                icon.addEventListener('click', function() {
-                    let user = this.getAttribute('data-user');
-
-                    try {
-                        user = JSON.parse(user); // Parse JSON dari atribut data-user
-                        if (user && user.id) {
-                            window.location.href = `/editregister/${user.id}`;
-                        } else {
-                            console.error("User ID tidak ditemukan!", user);
-                        }
-                    } catch (error) {
-                        console.error("Gagal mem-parsing data user:", error);
-                    }
-                });
-            });
-        });
     </script>
-</body>
-
-</html>
+@endsection

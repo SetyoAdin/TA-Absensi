@@ -26,51 +26,24 @@
                         <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Login
                         </h1>
+                        <label class="block text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">Email</span>
+                            <input
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="Jane Doe" />
+                        </label>
+                        <label class="block mt-4 text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">Password</span>
+                            <input
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="***************" type="password" />
+                        </label>
 
-                        <!-- Display validation errors -->
-                        @if ($errors->any())
-                            <div
-                                class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative dark:bg-red-700 dark:text-red-100 dark:border-red-600">
-                                <ul class="list-disc pl-5">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        <!-- Display success message -->
-                        @if (session('success'))
-                            <div
-                                class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative dark:bg-green-700 dark:text-green-100 dark:border-green-600">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <!-- Login Form with original action route -->
-                        <form method="POST" action="{{ route('login.post') }}">
-                            @csrf
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Username</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    placeholder="Username" name="name" id="name" value="{{ old('name') }}"
-                                    required autofocus />
-                            </label>
-                            <label class="block mt-4 text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Password</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    placeholder="***************" type="password" name="password" id="password"
-                                    required />
-                            </label>
-
-                            <!-- Convert anchor to button -->
-                            <button type="submit"
-                                class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                Log in
-                            </button>
-                        </form>
+                        <!-- You should use a button here, as the anchor is only used for the example  -->
+                        <a class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                            href="../index.html">
+                            Log in
+                        </a>
 
                         <hr class="my-8" />
 
@@ -108,21 +81,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add validation script from first page if needed -->
-    <script>
-        // Form validation (equivalent to the needs-validation script)
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-    </script>
 </body>
 
 </html>
