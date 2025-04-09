@@ -428,7 +428,7 @@
 
             <!-- Form Tambah Karyawan -->
             <div class="form-section">
-                <h3 class="section-header">Tambah Karyawan</h3>
+                <h2 class="section-header">Tambah Karyawan</h2>
 
                 @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>

@@ -1,452 +1,423 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Absensi Karyawan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Absensi - YukAbsen</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #10b981;
+            --success-hover: #059669;
+            --warning-color: #f59e0b;
+            --warning-hover: #d97706;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 0.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f8f9fa;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
         }
 
         .container {
             max-width: 1200px;
-            margin-top: 50px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
 
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            background: #ffffff;
-            padding: 0;
-            margin-top: 32px;
-            margin-bottom: 40px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background-color: #4f46e5;
-            color: #ffffff;
-            font-size: 22px;
-            font-weight: 600;
-            text-align: center;
-            padding: 25px 30px;
-            border-bottom: 1px solid #f0f0f0;
-            border-radius: 12px 12px 0 0 !important;
-        }
-
-        .card-body {
-            padding: 25px 30px;
+        .page-header {
+            margin-bottom: 2rem;
             text-align: center;
         }
 
-        .btn {
-            margin: 10px;
-            border-radius: 6px;
-            font-weight: 500;
-            padding: 10px 20px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-success {
-            background-color: #10b981;
-            border: none;
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
-        }
-
-        .btn-primary {
-            background-color: #4f46e5;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #4338ca;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
-        }
-
-        .btn-secondary {
-            background-color: #6b7280;
-            border: none;
-        }
-
-        .btn-secondary:hover {
-            background-color: #4b5563;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(107, 114, 128, 0.2);
-        }
-
-        .img-preview {
-            display: block;
-            margin: 15px auto;
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-        }
-
-        .nav-tabs {
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 20px;
-            justify-content: center;
-        }
-
-        .nav-tabs .nav-link {
-            font-weight: 600;
-            color: #6b7280;
-            border: none;
-            border-radius: 0;
-            padding: 16px 24px;
-            margin: 0 5px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .nav-tabs .nav-link.active {
-            color: #4f46e5;
-            background-color: transparent;
-            border-color: transparent;
-        }
-
-        .nav-tabs .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #4f46e5;
-            border-radius: 3px 3px 0 0;
-        }
-
-        .nav-tabs .nav-link:hover:not(.active) {
-            color: #4b5563;
-            border-color: transparent;
-        }
-
-        .nav-tabs .nav-link i {
-            margin-right: 8px;
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
         }
 
         .time-display {
-            background-color: #f9fafb;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-        }
-
-        .time-display h4 {
-            margin: 5px 0;
-            color: #4b5563;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .time-display span {
+            display: inline-block;
+            background-color: var(--card-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            font-size: 1.125rem;
             font-weight: 600;
-            color: #111827;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
         }
 
-        video {
+        .absen-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .absen-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .absen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            margin-right: 1rem;
+            color: white;
+        }
+
+        .card-icon.arrival {
+            background-color: var(--success-color);
+        }
+
+        .card-icon.departure {
+            background-color: var(--warning-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .camera-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-hover);
+        }
+
+        .camera-view {
+            position: relative;
             width: 100%;
-            max-width: 400px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            margin: 20px auto;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background-color: #f3f4f6;
+            margin-bottom: 1rem;
         }
 
-        .tab-pane {
-            padding: 20px 0;
+        video,
+        canvas,
+        img {
+            width: 100%;
+            border-radius: var(--radius);
+            display: block;
+        }
+
+        .camera-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 240px;
+            color: var(--text-light);
+        }
+
+        .camera-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
         }
 
         .alert {
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
         }
 
-        .attendance-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-            color: #4f46e5;
+        .alert-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
-        .tab-instructions {
-            color: #6b7280;
-            margin-bottom: 20px;
-            font-size: 15px;
+        @media (max-width: 768px) {
+            .absen-container {
+                grid-template-columns: 1fr;
+            }
+
+            .time-display {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="alert alert-success" style="display: none;" id="success-alert">
-                    <i class="fas fa-check-circle me-2"></i><span id="success-message"></span>
-                </div>
-                <div class="alert alert-danger" style="display: none;" id="error-alert">
-                    <i class="fas fa-exclamation-circle me-2"></i><span id="error-message"></span>
-                </div>
+        <div class="page-header">
+            <h1 class="page-title">Absensi</h1>
+            <div class="time-display">
+                <span id="tanggal"></span> - <span id="jam"></span>
+            </div>
+        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-user-clock me-2"></i>Absensi Karyawan
+        <div class="absen-container">
+            {{-- Absen Datang --}}
+            <div class="absen-card">
+                <div class="card-header">
+                    <div class="card-icon arrival">
+                        <i class="fas fa-sign-in-alt"></i>
                     </div>
+                    <h2 class="card-title">Absen Datang</h2>
+                </div>
 
-                    <div class="card-body">
-                        <div class="time-display">
-                            <h4><i class="far fa-calendar-alt me-2"></i>Tanggal: <span id="tanggal">Loading...</span>
-                            </h4>
-                            <h4><i class="far fa-clock me-2"></i>Jam: <span id="jam">Loading...</span></h4>
+                <form action="{{ route('absen.datang') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="status" value="hadir">
+                    <input type="hidden" name="tanggal" id="tanggalInput">
+                    <input type="hidden" name="jam_masuk" id="jamMasukInput">
+                    <input type="hidden" name="gambar" id="gambarInput">
+
+                    <div class="camera-container">
+                        <div class="camera-controls">
+                            <button type="button" id="aktifkanKamera" class="btn btn-primary">
+                                <i class="fas fa-camera"></i> Aktifkan Kamera
+                            </button>
+                            <button type="button" id="snap" class="btn btn-success" style="display: none;">
+                                <i class="fas fa-camera-retro"></i> Ambil Gambar
+                            </button>
                         </div>
 
-                        <ul class="nav nav-tabs" id="absensiTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <form id="absenForm" action="{{ route('absen.datang') }}" method="POST">
-                                    @csrf
-                                    <button class="nav-link active" id="absen-datang-tab" data-bs-toggle="tab"
-                                        data-bs-target="#absen-datang" type="button" role="tab"
-                                        aria-controls="absen-datang" aria-selected="true">
-                                        <i class="fas fa-sign-in-alt"></i> Absen Datang
-                                    </button>
-                                </form>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <form action="{{ route('absen.pulang') }}" method="POST">
-                                    @csrf
-                                    <button class="nav-link" id="absen-pulang-tab" data-bs-toggle="tab"
-                                        data-bs-target="#absen-pulang" type="button" role="tab"
-                                        aria-controls="absen-pulang" aria-selected="false">
-                                        <i class="fas fa-sign-out-alt"></i> Absen Pulang
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="absensiTabContent">
-                            <!-- Tab Absen Datang -->
-                            <div class="tab-pane fade show active" id="absen-datang" role="tabpanel"
-                                aria-labelledby="absen-datang-tab">
-                                <div class="attendance-icon">
-                                    <i class="fas fa-camera"></i>
-                                </div>
-                                <p class="tab-instructions">Silakan buka kamera dan ambil foto untuk melakukan absensi
-                                    datang.</p>
-
-                                <form id="absenForm" action="javascript:void(0);" method="POST">
-                                    <div class="mb-3 text-center">
-                                        <video id="video" autoplay playsinline style="display: none;"></video>
-                                        <canvas id="canvas" style="display: none;"></canvas>
-                                        <input type="hidden" name="gambar" id="gambarInput">
-                                    </div>
-
-                                    <button type="button" class="btn btn-success" id="openCameraBtn">
-                                        <i class="fas fa-camera me-2"></i>Buka Kamera
-                                    </button>
-                                    <button type="button" class="btn btn-primary" id="captureBtn"
-                                        style="display: none;">
-                                        <i class="fas fa-check me-2"></i>Absen Datang
-                                    </button>
-                                </form>
+                        <div class="camera-view">
+                            <video id="video" autoplay style="display: none;"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <div id="cameraPlaceholder" class="camera-placeholder">
+                                <i class="fas fa-camera"></i>
+                                <p>Kamera belum diaktifkan</p>
                             </div>
+                            <img id="previewGambar" style="display: none;" alt="Preview">
+                        </div>
 
-                            <!-- Tab Absen Pulang -->
-                            <div class="tab-pane fade" id="absen-pulang" role="tabpanel"
-                                aria-labelledby="absen-pulang-tab">
-                                <div class="attendance-icon">
-                                    <i class="fas fa-door-open"></i>
-                                </div>
-                                <p class="tab-instructions">Klik tombol di bawah untuk melakukan absensi pulang.</p>
-
-                                <form action="javascript:void(0);" method="POST">
-                                    <button type="submit" class="btn btn-secondary" id="absenPulangBtn">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Absen Pulang
-                                    </button>
-                                </form>
-                            </div>
+                        <div id="gambarAlert" class="alert alert-warning" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i> Silakan ambil gambar terlebih dahulu
                         </div>
                     </div>
+
+                    <button type="submit" class="btn btn-success" style="width: 100%;" onclick="return cekGambar()">
+                        <i class="fas fa-check"></i> Absen Datang
+                    </button>
+                </form>
+            </div>
+
+            {{-- Absen Pulang --}}
+            <div class="absen-card">
+                <div class="card-header">
+                    <div class="card-icon departure">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <h2 class="card-title">Absen Pulang</h2>
                 </div>
+
+                <form action="{{ route('absen.pulang') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="tanggal" id="tanggalInputPulang">
+                    <input type="hidden" name="jam_keluar" id="jamKeluarInput">
+
+                    <div class="form-group">
+                        <p>Klik tombol di bawah untuk melakukan absen pulang.</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">
+                        <i class="fas fa-check"></i> Absen Pulang
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Immediately update the clock when page loads
-        document.addEventListener("DOMContentLoaded", function() {
-            updateClock();
-            // Set interval after initial update
-            setInterval(updateClock, 1000);
-        });
+        const tanggalElem = document.getElementById("tanggal");
+        const jamElem = document.getElementById("jam");
+        const tanggalInput = document.getElementById("tanggalInput");
+        const jamMasukInput = document.getElementById("jamMasukInput");
+        const tanggalInputPulang = document.getElementById("tanggalInputPulang");
+        const jamKeluarInput = document.getElementById("jamKeluarInput");
+        const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+        const gambarAlert = document.getElementById("gambarAlert");
 
-        function updateClock() {
-            let now = new Date();
+        function updateTime() {
+            const now = new Date();
+            const tgl = now.toISOString().split("T")[0];
+            const jam = now.toTimeString().split(" ")[0];
 
-            // Format the date in Indonesian style
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
+            tanggalElem.textContent = tgl;
+            jamElem.textContent = jam;
 
-            // Update the tanggal and jam elements
-            document.getElementById('tanggal').textContent = now.toLocaleDateString('id-ID', options);
-            document.getElementById('jam').textContent = now.toLocaleTimeString('id-ID');
+            tanggalInput.value = tgl;
+            jamMasukInput.value = jam;
+            tanggalInputPulang.value = tgl;
+            jamKeluarInput.value = jam;
         }
 
-        // KAMERA FUNCTIONALITY
-        document.addEventListener("DOMContentLoaded", function() {
-            let video = document.getElementById("video");
-            let canvas = document.getElementById("canvas");
-            let captureBtn = document.getElementById("captureBtn");
-            let openCameraBtn = document.getElementById("openCameraBtn");
-            let gambarInput = document.getElementById("gambarInput");
-            let absenForm = document.getElementById("absenForm");
-            let absenPulangBtn = document.getElementById("absenPulangBtn");
-            let stream = null;
+        setInterval(updateTime, 1000);
+        updateTime();
 
-            // Show success message function
-            function showSuccess(message) {
-                const successAlert = document.getElementById('success-alert');
-                const successMessage = document.getElementById('success-message');
-                successMessage.textContent = message;
-                successAlert.style.display = 'block';
-                setTimeout(() => {
-                    successAlert.style.display = 'none';
-                }, 3000);
-            }
+        // Kamera
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const snap = document.getElementById('snap');
+        const gambarInput = document.getElementById('gambarInput');
+        const previewImg = document.getElementById("previewGambar");
 
-            // Show error message function
-            function showError(message) {
-                const errorAlert = document.getElementById('error-alert');
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = message;
-                errorAlert.style.display = 'block';
-                setTimeout(() => {
-                    errorAlert.style.display = 'none';
-                }, 3000);
-            }
+        // Tambahkan variabel global
+        let cameraStream = null;
 
-            // Absen Pulang button click handler
-            absenPulangBtn.addEventListener("click", function() {
-                showSuccess("Absensi pulang berhasil dicatat!");
-            });
-
-            // Fungsi Buka Kamera
-            openCameraBtn.addEventListener("click", function() {
-                // First try user facing camera for attendance
-                navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: "user"
-                        }
-                    })
-                    .then(function(mediaStream) {
-                        stream = mediaStream;
-                        video.srcObject = mediaStream;
-                        video.style.display = "block";
-                        captureBtn.style.display = "inline-block";
-                        openCameraBtn.style.display = "none";
-
-                        // Make sure video is actually playing
-                        video.play().catch(function(error) {
-                            showError("Error playing video: " + error.message);
-                        });
-                    })
-                    .catch(function(error) {
-                        console.error("Gagal mengakses kamera depan, mencoba kamera belakang: ", error);
-
-                        // If front camera fails, try environment camera
-                        navigator.mediaDevices.getUserMedia({
-                                video: {
-                                    facingMode: "environment"
-                                }
-                            })
-                            .then(function(mediaStream) {
-                                stream = mediaStream;
-                                video.srcObject = mediaStream;
-                                video.style.display = "block";
-                                captureBtn.style.display = "inline-block";
-                                openCameraBtn.style.display = "none";
-
-                                // Make sure video is actually playing
-                                video.play().catch(function(error) {
-                                    showError("Error playing video: " + error.message);
-                                });
-                            })
-                            .catch(function(finalError) {
-                                console.error("Gagal mengakses semua kamera: ", finalError);
-                                showError(
-                                    "Gagal mengakses kamera. Pastikan Anda mengizinkan akses kamera dan browser Anda mendukung fitur ini."
-                                );
-                            });
-                    });
-            });
-
-            // Fungsi Tangkap Gambar
-            captureBtn.addEventListener("click", function() {
-                try {
-                    let context = canvas.getContext("2d");
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                    // Ubah gambar ke Base64
-                    let imageData = canvas.toDataURL("image/png");
-                    gambarInput.value = imageData;
-
-                    // Matikan Kamera Setelah Absen
-                    stopCamera();
-
-                    // Simulasi keberhasilan absen
-                    showSuccess("Absensi datang berhasil dicatat!");
-                } catch (error) {
-                    console.error("Error capturing image:", error);
-                    showError("Gagal mengambil gambar. Coba buka kamera lagi.");
-                }
-            });
-
-            // Fungsi Matikan Kamera
-            function stopCamera() {
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                }
-                video.style.display = "none";
-                captureBtn.style.display = "none";
-                openCameraBtn.style.display = "inline-block";
-            }
-
-            // Pastikan Kamera Mati Setelah Submit Form
-            absenForm.addEventListener("submit", function(e) {
-                e.preventDefault();
-                stopCamera();
-            });
-
-            // Tambahan untuk menangani pemadam kamera saat tab berganti
-            const absensiTabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
-            absensiTabs.forEach(tab => {
-                tab.addEventListener('shown.bs.tab', function() {
-                    stopCamera();
+        // Tombol aktifkan kamera
+        const startCameraBtn = document.getElementById('aktifkanKamera');
+        startCameraBtn.addEventListener('click', function() {
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(function(stream) {
+                    cameraStream = stream;
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    cameraPlaceholder.style.display = 'none';
+                    snap.style.display = 'inline-flex';
+                    video.play();
+                })
+                .catch(function(err) {
+                    console.log("Error: " + err);
+                    alert("Tidak dapat mengakses kamera. Pastikan kamera terhubung dan izin diberikan.");
                 });
-            });
         });
+
+        // Tombol ambil gambar
+        snap.addEventListener("click", function() {
+            // Gambar dari video ke canvas
+            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Ubah canvas menjadi data URL
+            const dataURL = canvas.toDataURL("image/png");
+
+            // Masukkan data URL ke input tersembunyi
+            gambarInput.value = dataURL;
+
+            // Tampilkan preview ke elemen <img>
+            previewImg.src = dataURL;
+            previewImg.style.display = 'block';
+            video.style.display = 'none';
+            cameraPlaceholder.style.display = 'none';
+
+            // Nonaktifkan kamera
+            if (cameraStream) {
+                const tracks = cameraStream.getTracks();
+                tracks.forEach(track => track.stop());
+                snap.style.display = 'none';
+                startCameraBtn.style.display = 'inline-flex';
+            }
+        });
+
+        function cekGambar() {
+            const gambar = document.getElementById('gambarInput').value;
+            if (!gambar) {
+                gambarAlert.style.display = 'block';
+                return false;
+            }
+            return true;
+        }
     </script>
 </body>
 

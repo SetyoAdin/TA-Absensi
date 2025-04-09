@@ -11,24 +11,17 @@ use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+
 
 
 class AuthController extends Controller
 {
+
     public function regist()
     {
         $users = User::all();
         return view('auth.register', compact('users'));
     }
-    public function karyawan()
-    {
-        $users = User::all();
-        $karyawans = Karyawan::all();
-        return view('admin.karyawan', compact('users', 'karyawans'));
-    }
-
-
 
     public function register(Request $request)
     {
@@ -109,7 +102,7 @@ class AuthController extends Controller
 
     public function userdestroy($id)
     {
-        $user = User::find($id); // Cari user berdasarkan primary key
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json(['message' => 'User tidak ditemukan'], 404);
@@ -121,40 +114,38 @@ class AuthController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+
+    public function edit($id)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,user_id',
-            'posisi' => 'required|string|max:255',
-            'departemen' => 'required|string|max:255',
-        ]);
+        $user = User::where('user_id', $id)->firstOrFail(); // Cari berdasarkan 'id', bukan 'user_id'
 
-        $karyawan = Karyawan::findOrFail($id);
-        $karyawan->update([
-            'user_id' => $request->user_id,
-            'posisi' => $request->posisi,
-            'departemen' => $request->departemen,
-        ]);
-
-        return redirect()->back()->with('success', 'Data karyawan berhasil diperbarui!');
+        return view('auth.editregister', compact('user')); // Kirim data ke view
     }
-    public function userupdate(Request $request, $user_id)
+
+
+    public function updatepengguna(Request $request, $user_id)
     {
+        // Validasi inputan
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($user_id, 'user_id'),
+                Rule::unique('users', 'email')->ignore($user_id, 'user_id'), // Sesuaikan primary key
             ],
-            'password' => 'nullable|min:6',
-            'role' => 'required|in:karyawan,admin',
+            'password' => 'nullable|min:6', // Password boleh kosong, jika diisi validasi minimal 6 karakter
+            'role' => 'required|in:karyawan,admin', // Validasi role
         ]);
 
+        // Ambil data user berdasarkan user_id
         $user = User::where('user_id', $user_id)->firstOrFail();
+        // Gunakan user_id sesuai primary key
+
+        // Update data user
         $user->name = $request->name;
         $user->email = $request->email;
 
+        // Update password hanya jika diisi
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
@@ -162,30 +153,9 @@ class AuthController extends Controller
         $user->role = $request->role;
         $user->save();
 
-        return redirect()->back()->with('success', 'Data karyawan berhasil diperbarui.');
+        return redirect('/register')->with('success', 'Data pengguna berhasil diperbarui.');
     }
-    public function updatekaryawan(Request $request, $user_id)
-    {
-        // Validasi input
-        $request->validate([
-            'user_id' => 'required|exists:users,user_id',
-            'posisi' => 'required|string|max:255',
-            'departemen' => 'required|string|max:255',
-        ]);
 
-        // Cek apakah karyawan dengan user_id ada
-        $karyawan = Karyawan::where('user_id', $user_id)->firstOrFail();
-
-        // Update data karyawan
-        $karyawan->update([
-            'user_id' => $request->user_id,
-            'posisi' => $request->posisi,
-            'departemen' => $request->departemen,
-        ]);
-
-        // Redirect kembali ke halaman karyawan
-        return redirect('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
-    }
     public function logout(Request $request)
     {
         Auth::logout(); // Logout user

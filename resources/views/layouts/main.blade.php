@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blank - Windmill Dashboard</title>
+    <title>YukAbsen-App</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -20,7 +22,7 @@
         <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
             <div class="py-4 text-gray-500 dark:text-gray-400">
                 <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-                    Windmill
+                    YukAbsen
                 </a>
                 <ul class="mt-6">
                     <li class="relative px-6 py-3">
@@ -63,14 +65,14 @@
                     </li>
                     <li class="relative px-6 py-3">
                         <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                            href="template/cards.html">
+                            href="/kategori">
                             <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                                 <path
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
                                 </path>
                             </svg>
-                            <span class="ml-4">Halo</span>
+                            <span class="ml-4">Kategori Izin</span>
                         </a>
                     </li>
                     <li class="relative px-6 py-3">
@@ -388,9 +390,48 @@
                             <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
                                 @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account"
                                 aria-haspopup="true">
-                                <img class="object-cover w-8 h-8 rounded-full"
-                                    src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
-                                    alt="" aria-hidden="true" />
+                                @php
+                                    $initials =
+                                        Str::upper(
+                                            Str::substr(
+                                                Str::of(Auth::user()->name)
+                                                    ->explode(' ')
+                                                    ->first(),
+                                                0,
+                                                1,
+                                            ),
+                                        ) .
+                                        Str::upper(
+                                            Str::substr(
+                                                Str::of(Auth::user()->name)
+                                                    ->explode(' ')
+                                                    ->skip(1)
+                                                    ->first(),
+                                                0,
+                                                1,
+                                            ),
+                                        );
+
+                                    // Tentukan warna latar belakang berdasarkan inisial (misalnya: A-F = biru, G-M = hijau, N-Z = merah)
+                                    $bgColor = match ($initials[0]) {
+                                        'A', 'B', 'C', 'D', 'E', 'F' => 'bg-blue-500',
+                                        'G', 'H', 'I', 'J', 'K', 'L', 'M' => 'bg-green-500',
+                                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' => 'bg-red-500',
+                                        default => 'bg-gray-500',
+                                    };
+                                @endphp
+
+                                @if (Auth::user()->profile_picture)
+                                    <img class="object-cover w-8 h-8 rounded-full"
+                                        src="{{ Auth::user()->profile_picture }}" alt="{{ Auth::user()->name }}"
+                                        aria-hidden="true" />
+                                @else
+                                    <div
+                                        class="object-cover w-8 h-8 rounded-full {{ $bgColor }} text-white flex items-center justify-center text-sm font-bold">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
+
                             </button>
                             <template x-if="isProfileMenuOpen">
                                 <ul x-transition:leave="transition ease-in duration-150"

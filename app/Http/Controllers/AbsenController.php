@@ -6,78 +6,183 @@ use Illuminate\Http\Request;
 use App\Models\Absen;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Karyawan;
+use App\Models\KategoriIzin;
 use Illuminate\Support\Facades\Storage;
 
 class AbsenController extends Controller
 {
-    // Fungsi untuk absen datang
-    public function absenDatang(Request $request)
+    public function dataabsen()
     {
-        $user_id = Auth::id(); // Jika tanpa login, bisa NULL
-        $tanggal = now('Asia/Jakarta')->format('Y-m-d');
-        $jam_masuk = now('Asia/Jakarta')->format('H:i:s');
-
-        // Cek apakah sudah absen datang hari ini
-        $absen = Absen::where('user_id', $user_id)->where('tanggal', $tanggal)->first();
-        if ($absen) {
-            return back()->with('error', 'Anda sudah melakukan absen datang hari ini.');
-        }
-
-        // **Pastikan Gambar Ditangkap dengan Benar**
-        $gambarPath = null;
-
-        if ($request->gambar) { // **Pastikan request berisi gambar**
-            $imageData = $request->gambar;
-            list($type, $imageData) = explode(';', $imageData);
-            list(, $imageData) = explode(',', $imageData);
-            $imageData = base64_decode($imageData);
-
-            // **Buat Nama File Unik**
-            $fileName = 'absen_' . time() . '.png';
-
-            // **Simpan ke Folder [public/image/](cci:7://file:///d:/SEKOLAH/laragon/www/YukAbsen/public/image:0:0-0:0)**
-            $gambarPath = public_path('image/' . $fileName);
-            file_put_contents($gambarPath, $imageData);
-
-            // **Simpan Path ke Database**
-            $gambarLink = asset('image/' . $fileName);
-        }
-
-        // Simpan data absen ke database
-        Absen::create([
-            'user_id'   => $user_id,
-            'tanggal'   => $tanggal,
-            'jam_masuk' => $jam_masuk,
-            'status'    => 'hadir',
-            'gambar'    => $gambarLink,
-        ]);
-
-
-        // **Hentikan Kamera Setelah Absen**
-        return response()->json(['success' => true, 'message' => 'Berhasil absen dengan gambar.']);
+        return view('admin.dataabsen');
     }
 
-    // Fungsi untuk absen pulang
-    public function absenPulang()
+    public function filter(Request $request)
     {
-        $user_id = Auth::id();
-        $tanggal = Carbon::now()->toDateString();
-        $jam_keluar = Carbon::now()->toTimeString();
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
 
-        // Cek apakah sudah absen datang
-        $absen = Absen::where('user_id', $user_id)->where('tanggal', $tanggal)->first();
-        if (!$absen) {
-            return back()->with('error', 'Anda belum melakukan absen datang.');
+        $startDate = Carbon::parse($request->start_date)->startOfDay();
+        $endDate = Carbon::parse($request->end_date)->endOfDay();
+
+        $absens = Absen::with(['user', 'kategoriIzin'])
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('tanggal', 'desc')
+            ->get()
+            ->map(function ($absen) {
+                return [
+                    'user_name' => $absen->user ? $absen->user->name : 'N/A',
+                    'kategori_izin' => $absen->kategoriIzin ? $absen->kategoriIzin->nama_kategori : 'Hadir',
+                    'tanggal' => $absen->tanggal->format('d/m/Y'),
+                    'jam_masuk' => $absen->jam_masuk ? Carbon::parse($absen->jam_masuk)->format('H:i:s') : '-',
+                    'jam_keluar' => $absen->jam_keluar ? Carbon::parse($absen->jam_keluar)->format('H:i:s') : '-',
+                    'status' => ucfirst($absen->status),
+                    'alasan' => $absen->alasan ?? '-',
+                    'gambar' => $absen->gambar ? asset($absen->gambar) : null,
+                    'actions' => view('admin.absen-actions', ['absen' => $absen])->render()
+                ];
+            });
+
+        return response()->json($absens);
+    }
+
+    public function kategori()
+    {
+        $user = Auth::user();
+        $karyawan = Karyawan::where('user_id', $user->user_id)->first();
+        $kategori_izins = KategoriIzin::all();
+
+        return view('admin.kategori', compact('karyawan', 'kategori_izins'));
+    }
+
+    public function absenDatang(Request $request)
+    {
+        $request->validate([
+            'gambar' => 'required',
+        ]);
+
+        // Ambil data base64 dari request
+        $imageData = $request->input('gambar');
+
+        if ($imageData) {
+            // Hilangkan prefix base64
+            $imageData = str_replace('data:image/png;base64,', '', $imageData);
+            $imageData = str_replace(' ', '+', $imageData);
+
+            // Nama file
+            $fileName = 'absen_' . time() . '.png';
+            $folderPath = public_path('image');
+
+            // Pastikan folder image ada
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0755, true);
+            }
+
+            $path = $folderPath . '/' . $fileName;
+
+            // Simpan file fisik
+            file_put_contents($path, base64_decode($imageData));
+
+            // Simpan path file ke database
+            $gambarPath = 'image/' . $fileName;
+
+            Absen::create([
+                'user_id' => Auth::id(),
+                'tanggal' => now()->toDateString(),
+                'jam_masuk' => now()->toTimeString(),
+                'status' => 'hadir',
+                'gambar' => $gambarPath, // Ini link yang disimpan
+            ]);
+
+            return redirect()->back()->with('success', 'Absen Datang Berhasil!');
         }
 
-        // Cek apakah sudah absen pulang
-        if ($absen->jam_keluar) {
-            return back()->with('error', 'Anda sudah melakukan absen pulang hari ini.');
+        // Jika tidak ada gambar
+        return redirect()->back()->with('error', 'Gagal menyimpan gambar.');
+    }
+
+
+    public function absenPulang(Request $request)
+    {
+        $absen = Absen::where('user_id', Auth::id())
+            ->where('tanggal', now()->toDateString())
+            ->first();
+
+        if ($absen) {
+            $absen->update([
+                'jam_keluar' => now()->toTimeString()
+            ]);
+            return redirect()->back()->with('success', 'Absen Pulang Berhasil!');
         }
 
-        // Update data absen
-        $absen->update(['jam_keluar' => $jam_keluar]);
+        return redirect()->back()->with('error', 'Data absen datang tidak ditemukan.');
+    }
 
-        return response()->json(['success' => true, 'message' => 'Absen pulang berhasil!']);
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        KategoriIzin::create([
+            'nama_kategori' => $request->nama_kategori,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori izin berhasil ditambahkan!');
+    }
+    public function kategoriDestroy($id)
+    {
+        $kategori = KategoriIzin::findOrFail($id);
+        $kategori->delete();
+
+        return redirect()->back()->with('success', 'Kategori izin berhasil dihapus.');
+    }
+
+    public function edit($id)
+    {
+        $absen = Absen::findOrFail($id);
+        $kategoriIzins = KategoriIzin::all();
+        return view('admin.edit-absen', compact('absen', 'kategoriIzins'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'jam_masuk' => 'nullable|date_format:H:i:s',
+            'jam_keluar' => 'nullable|date_format:H:i:s',
+            'status' => 'required|in:hadir,izin,sakit,alpha',
+            'kategori_izin_id' => 'nullable|exists:kategori_izins,detail_izin_id',
+            'alasan' => 'nullable|string',
+        ]);
+
+        $absen = Absen::findOrFail($id);
+
+        // Get all request data except gambar
+        $data = $request->except('gambar');
+
+        // Update the record
+        $absen->update($data);
+
+        return redirect()->route('dataabsen')->with('success', 'Data absen berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $absen = Absen::findOrFail($id);
+
+        // Delete the image file if it exists
+        if ($absen->gambar && file_exists(public_path($absen->gambar))) {
+            unlink(public_path($absen->gambar));
+        }
+
+        $absen->delete();
+
+        return redirect()->route('dataabsen')->with('success', 'Data absen berhasil dihapus.');
     }
 }

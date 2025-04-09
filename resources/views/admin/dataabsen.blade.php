@@ -1,8 +1,189 @@
 @extends('layouts.main') {{-- Gunakan template utama --}}
 
-@section('title', 'Kelola Pengguna') {{-- Set title --}}
+@section('title', 'Kategori Izin') {{-- Set title --}}
 
 @section('content')
+    {{-- <style>
+        /* Masukkan semua CSS dark mode kamu di sini */
+        :root {
+            --dark-bg: #121212;
+            --dark-section: #1e1e1e;
+            --dark-input: #2d2d2d;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --warning-hover: #d97706;
+            --success: #10b981;
+            --border-color: #2d2d2d;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin-bottom: 30px;
+        }
+
+        .form-section,
+        .table-section {
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-header {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-hover);
+            border-color: var(--warning-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+            border-color: var(--danger-hover);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.875rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table thead {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .table thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.2rem;
+            /* atau sesuai kebutuhan */
+        }
+    </style> --}}
+
     <style>
         :root {
             --dark-bg: #121212;
@@ -351,10 +532,7 @@
             }
 
             /* Stack action buttons on small screens */
-            td .btn {
-                margin-bottom: 5px;
-                margin-right: 3px;
-            }
+
 
             /* DataTables mobile improvements */
             .dataTables_filter {
@@ -419,160 +597,240 @@
         .flex-wrap {
             flex-wrap: wrap;
         }
+
+        /* DataTables Search Styling */
+        .dataTables_filter {
+            margin-bottom: 15px;
+        }
+
+        .dataTables_filter input {
+            width: 180px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        .dataTables_length select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .dataTables_length select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        /* Highlight search results */
+        .highlight {
+            background-color: rgba(99, 102, 241, 0.2);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* Loading indicator */
+        .loading {
+            position: relative;
+            opacity: 0.6;
+        }
+
+        .loading:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            margin: -20px 0 0 -20px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .dataTables_filter input {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .dataTables_length,
+            .dataTables_filter {
+                text-align: left;
+                margin-bottom: 10px;
+            }
+        }
     </style>
+
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid">
             <h2 class="page-title">
-                Manajemen Pengguna
+                Daftar Absen
             </h2>
 
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <!-- Form Section -->
+            <!-- Filter Form -->
             <div class="form-section">
-                <h2 class="section-header">Tambah Pengguna</h2>
-                <form action="{{ route('register.store') }}" method="POST">
-                    @csrf
-                    <div class="form-row">
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
-                        </div>
-
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                        </div>
+                <h2 class="section-header">Filter Data Absen</h2>
+                <form id="filterForm" class="form-row">
+                    <div class="form-col form-col-md-4">
+                        <label for="start_date" class="form-label">Tanggal Mulai</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date">
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
-                        </div>
+                    <div class="form-col form-col-md-4">
+                        <label for="end_date" class="form-label">Tanggal Akhir</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date">
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label class="form-label">Role</label>
-                            <select name="role" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
-                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Register</button>
+                    <div class="form-col form-col-md-4 d-flex align-items-end">
+                        <button type="button" id="filterButton" class="btn btn-primary">Tampilkan Data</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Table Section -->
+            <!-- Tabel Pengguna -->
             <div class="table-section">
-                <h2 class="section-header">Daftars User</h2>
+                <h2 class="section-header">Daftar Absen</h2>
                 <div class="table-responsive">
-                    <table id="karyawanTable" class="table table-bordered">
+                    <table id="absenTable" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Tanggal Daftar</th>
-                                <th>Di Edit Pada</th>
+                                <th>Nama Karyawan</th>
+                                <th>Kategori Izin</th>
+                                <th>Tanggal</th>
+                                <th>Jam Masuk</th>
+                                <th>Jam Keluar</th>
+                                <th>Status</th>
+                                <th>Alasan</th>
+                                <th>Gambar</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
-                                <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ ucfirst($user->role) }}</td>
-                                    <td>{{ $user->created_at->format('d M Y') }}</td>
-                                    <td>{{ $user->updated_at->format('d M Y') }}</td>
-                                    <td>
-                                        <div class="d-flex flex-wrap">
-                                            <a href="{{ url('/editregister/' . $user->user_id) }}"
-                                                class="btn btn-warning btn-sm">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <button class="btn btn-danger btn-sm delete" title="Hapus"
-                                                data-url="{{ route('hapus-user', ['id' => $user->user_id]) }}">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            <!-- Data will be loaded via AJAX -->
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </main>
 @endsection
+
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#karyawanTable').DataTable({
-                "paging": true,
-                "searching": true,
+            // Initialize DataTable with empty data
+            var table = $('#absenTable').DataTable({
+                "data": [],
+                "columns": [{
+                        "data": "user_name"
+                    },
+                    {
+                        "data": "kategori_izin"
+                    },
+                    {
+                        "data": "tanggal"
+                    },
+                    {
+                        "data": "jam_masuk"
+                    },
+                    {
+                        "data": "jam_keluar"
+                    },
+                    {
+                        "data": "status"
+                    },
+                    {
+                        "data": "alasan"
+                    },
+                    {
+                        "data": "gambar",
+                        "render": function(data, type, row) {
+                            if (data) {
+                                return '<a href="' + data + '" target="_blank"><img src="' + data +
+                                    '" alt="Absen Image" style="max-width: 50px; max-height: 50px; cursor: pointer;"></a>';
+                            } else {
+                                return '-';
+                            }
+                        }
+                    },
+                    {
+                        "data": "actions"
+                    }
+                ],
                 "language": {
-                    "search": "Cari:",
-                    "lengthMenu": "Tampilkan _MENU_ entri",
-                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
-                    "infoFiltered": "(disaring dari _MAX_ total entri)",
-                    "zeroRecords": "Tidak ada data yang cocok",
+                    "search": "",
+                    "lengthMenu": "Tampilkan _MENU_ data",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                     "paginate": {
-                        "first": "Pertama",
-                        "last": "Terakhir",
+                        "first": "Awal",
+                        "last": "Akhir",
                         "next": "Selanjutnya",
                         "previous": "Sebelumnya"
-                    }
-                }
+                    },
+                    "zeroRecords": "Tidak ada data yang sesuai",
+                    "infoEmpty": "Menampilkan 0 data",
+                    "infoFiltered": "(disaring dari _MAX_ total data)"
+                },
+                "lengthMenu": [5, 15, 25, 50, 100],
+                "responsive": true,
+                "autoWidth": false
             });
-        });
-        //HANDEL HAPUS USER
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete');
 
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute(
-                        'content');
+            // Handle filter button click
+            $('#filterButton').on('click', function() {
+                var startDate = $('#start_date').val();
+                var endDate = $('#end_date').val();
 
-                    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-                        fetch(url, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': token
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                alert(data.message);
-                                // Reload halaman atau hapus baris user dari tabel
-                                location.reload();
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Terjadi kesalahan saat menghapus user.');
-                            });
+                if (!startDate || !endDate) {
+                    alert('Silakan pilih tanggal mulai dan tanggal akhir');
+                    return;
+                }
+
+                // Show loading indicator
+                $('#absenTable').addClass('loading');
+
+                // Fetch filtered data from server
+                $.ajax({
+                    url: '{{ route('absen.filter') }}',
+                    type: 'GET',
+                    data: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    success: function(response) {
+                        // Clear and reload table with new data
+                        table.clear().rows.add(response).draw();
+                        $('#absenTable').removeClass('loading');
+                    },
+                    error: function() {
+                        alert('Terjadi kesalahan saat mengambil data');
+                        $('#absenTable').removeClass('loading');
                     }
                 });
             });

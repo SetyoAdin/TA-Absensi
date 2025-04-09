@@ -18,6 +18,27 @@ class Absen extends Model
         'jam_masuk',
         'jam_keluar',
         'status',
-        'alasan'
+        'alasan',
+        'gambar'
     ];
+
+    // Define date casting to ensure proper date handling
+    protected $casts = [
+        'tanggal' => 'date:Y-m-d',
+        'jam_masuk' => 'datetime:H:i:s',
+        'jam_keluar' => 'datetime:H:i:s',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
+    // Define relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function kategoriIzin()
+    {
+        return $this->belongsTo(KategoriIzin::class, 'kategori_izin_id', 'detail_izin_id');
+    }
 }

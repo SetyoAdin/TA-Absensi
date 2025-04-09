@@ -168,6 +168,17 @@
             border-color: var(--accent-hover);
         }
 
+        .btn-light {
+            background-color: var(--dark-input);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-light:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
         .btn-secondary {
             background-color: var(--secondary);
             border-color: var(--secondary);
@@ -408,8 +419,12 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="/karyawan" class="btn btn-secondary">Kembali</a>
+                        <a href="/karyawan" class="btn btn-light">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
                     </div>
                 </form>
             </div>

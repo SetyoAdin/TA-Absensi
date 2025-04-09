@@ -1,8 +1,189 @@
 @extends('layouts.main') {{-- Gunakan template utama --}}
 
-@section('title', 'Kelola Pengguna') {{-- Set title --}}
+@section('title', 'Kategori Izin') {{-- Set title --}}
 
 @section('content')
+    {{-- <style>
+        /* Masukkan semua CSS dark mode kamu di sini */
+        :root {
+            --dark-bg: #121212;
+            --dark-section: #1e1e1e;
+            --dark-input: #2d2d2d;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --warning-hover: #d97706;
+            --success: #10b981;
+            --border-color: #2d2d2d;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin-bottom: 30px;
+        }
+
+        .form-section,
+        .table-section {
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-header {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-hover);
+            border-color: var(--warning-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+            border-color: var(--danger-hover);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.875rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table thead {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .table thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.2rem;
+            /* atau sesuai kebutuhan */
+        }
+    </style> --}}
+
     <style>
         :root {
             --dark-bg: #121212;
@@ -351,10 +532,7 @@
             }
 
             /* Stack action buttons on small screens */
-            td .btn {
-                margin-bottom: 5px;
-                margin-right: 3px;
-            }
+
 
             /* DataTables mobile improvements */
             .dataTables_filter {
@@ -420,96 +598,72 @@
             flex-wrap: wrap;
         }
     </style>
+
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid">
             <h2 class="page-title">
-                Manajemen Pengguna
+                Kategori Izin
             </h2>
 
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <!-- Form Section -->
+            <!-- Form Tambah Pengguna -->
             <div class="form-section">
-                <h2 class="section-header">Tambah Pengguna</h2>
-                <form action="{{ route('register.store') }}" method="POST">
+                <h2 class="section-header">Tambah Kategori Izin</h2>
+                <form action="/kategori-izin/store" method="POST">
                     @csrf
-                    <div class="form-row">
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
-                        </div>
+                    <label class="form-label" for="nama_kategori">Nama Kategori</label>
+                    <input type="text" id="nama_kategori" name="nama_kategori" class="form-control" required>
 
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                        </div>
-                    </div>
+                    <label class="form-label" for="deskripsi">Deskripsi</label>
+                    <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4"></textarea>
 
-                    <div class="form-row">
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-
-                        <div class="form-col form-col-md-6">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label class="form-label">Role</label>
-                            <select name="role" class="form-control" required>
-                                <option value="">Pilih Role</option>
-                                <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
-                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>
 
-            <!-- Table Section -->
+
+            <!-- Tabel Pengguna -->
             <div class="table-section">
-                <h2 class="section-header">Daftars User</h2>
+                <h2 class="section-header">Daftar Kategori Izin</h2>
                 <div class="table-responsive">
-                    <table id="karyawanTable" class="table table-bordered">
+                    <table id="kategoriIzinTable" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Tanggal Daftar</th>
-                                <th>Di Edit Pada</th>
+                                <th>Nama Kategori</th>
+                                <th>Deskripsi</th>
+                                <th>Dibuat Pada</th>
+                                <th>Diperbarui Pada</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
+                            @foreach ($kategori_izins as $index => $izin)
                                 <tr>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ ucfirst($user->role) }}</td>
-                                    <td>{{ $user->created_at->format('d M Y') }}</td>
-                                    <td>{{ $user->updated_at->format('d M Y') }}</td>
+                                    <td>{{ $izin->nama_kategori }}</td>
+                                    <td>{{ $izin->deskripsi }}</td>
+                                    <td>{{ $izin->created_at->format('d M Y') }}</td>
+                                    <td>{{ $izin->updated_at->format('d M Y') }}</td>
                                     <td>
-                                        <div class="d-flex flex-wrap">
-                                            <a href="{{ url('/editregister/' . $user->user_id) }}"
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a href="{{ url('/kategori-izin/edit/' . $izin->detail_izin_id) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete" title="Hapus"
-                                                data-url="{{ route('hapus-user', ['id' => $user->user_id]) }}">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
+                                            <form action="{{ route('kategori-izin.destroy', $izin->detail_izin_id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-danger btn-sm" type="submit"
+                                                    onclick="return confirm('Yakin ingin menghapus?')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+
                                         </div>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -517,16 +671,18 @@
                     </table>
                 </div>
             </div>
+
         </div>
     </main>
 @endsection
+
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#karyawanTable').DataTable({
+            $('#kategoriIzinTable').DataTable({
                 "paging": true,
                 "searching": true,
                 "language": {
@@ -543,38 +699,6 @@
                         "previous": "Sebelumnya"
                     }
                 }
-            });
-        });
-        //HANDEL HAPUS USER
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete');
-
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute(
-                        'content');
-
-                    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-                        fetch(url, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': token
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                alert(data.message);
-                                // Reload halaman atau hapus baris user dari tabel
-                                location.reload();
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Terjadi kesalahan saat menghapus user.');
-                            });
-                    }
-                });
             });
         });
     </script>
