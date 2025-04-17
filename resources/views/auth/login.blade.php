@@ -59,10 +59,15 @@
                             </label>
                             <label class="block mt-4 text-sm">
                                 <span class="text-gray-700 dark:text-gray-400">Password</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    placeholder="***************" type="password" name="password" id="password"
-                                    required />
+                                <div class="password-input-group">
+                                    <input
+                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                        placeholder="***************" type="password" name="password" id="password"
+                                        required />
+                                    <span class="password-toggle" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </label>
 
                             <!-- Convert anchor to button -->
@@ -79,7 +84,39 @@
         </div>
     </div>
 
-    <!-- Add validation script from first page if needed -->
+    <style>
+        /* Password input group styling */
+        .password-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: #9f7aea;
+        }
+
+        .password-input-group .form-input {
+            padding-right: 35px;
+        }
+
+        .dark .password-toggle {
+            color: #9ca3af;
+        }
+
+        .dark .password-toggle:hover {
+            color: #a78bfa;
+        }
+    </style>
+
     <script>
         // Form validation (equivalent to the needs-validation script)
         document.addEventListener('DOMContentLoaded', function() {
@@ -92,6 +129,21 @@
                 form.classList.add('was-validated');
             }, false);
         });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 

@@ -1,189 +1,8 @@
 @extends('layouts.main') {{-- Gunakan template utama --}}
 
-@section('title', 'Kategori Izin') {{-- Set title --}}
+@section('title', 'Data Absen') {{-- Set title --}}
 
 @section('content')
-    {{-- <style>
-        /* Masukkan semua CSS dark mode kamu di sini */
-        :root {
-            --dark-bg: #121212;
-            --dark-section: #1e1e1e;
-            --dark-input: #2d2d2d;
-            --accent-color: #6366f1;
-            --accent-hover: #4f46e5;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --warning: #f59e0b;
-            --warning-hover: #d97706;
-            --success: #10b981;
-            --border-color: #2d2d2d;
-        }
-
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-            width: 100%;
-        }
-
-        .page-title {
-            font-weight: 700;
-            font-size: 1.75rem;
-            margin-bottom: 30px;
-        }
-
-        .form-section,
-        .table-section {
-            background-color: var(--dark-section);
-            border-radius: 10px;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .section-header {
-            font-weight: 600;
-            font-size: 1.25rem;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            background-color: var(--dark-input);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 6px;
-            padding: 10px 16px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            border-color: var(--accent-hover);
-        }
-
-        .btn-warning {
-            background-color: var(--warning);
-            border-color: var(--warning);
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background-color: var(--warning-hover);
-            border-color: var(--warning-hover);
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-            border-color: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: var(--danger-hover);
-            border-color: var(--danger-hover);
-        }
-
-        .btn-sm {
-            padding: 6px 10px;
-            font-size: 0.875rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .table thead {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .table thead th {
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            border-bottom: 2px solid var(--border-color);
-            text-transform: uppercase;
-        }
-
-        .table tbody tr {
-            transition: background-color 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-        }
-
-        .table tbody td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .alert-success {
-            background-color: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--success);
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .d-flex {
-            display: flex;
-        }
-
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-
-        .d-flex.gap-2 {
-            gap: 0.2rem;
-            /* atau sesuai kebutuhan */
-        }
-    </style> --}}
-
     <style>
         :root {
             --dark-bg: #121212;
@@ -679,6 +498,86 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* DataTables Styling */
+        div.dataTables_wrapper {
+            margin-bottom: 20px;
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        div.dataTables_wrapper div.dataTables_length select {
+            width: auto;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 250px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        div.dataTables_wrapper div.dataTables_length,
+        div.dataTables_wrapper div.dataTables_filter,
+        div.dataTables_wrapper div.dataTables_info,
+        div.dataTables_wrapper div.dataTables_paginate {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary) !important;
+            margin: 0 3px;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button.current {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: white !important;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button:hover:not(.current) {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* Toast notification styling */
+        .swal2-toast {
+            background-color: var(--dark-section) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .swal2-toast .swal2-title {
+            color: var(--text-primary) !important;
+        }
+
+        .swal2-toast .swal2-icon {
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
     </style>
 
     <main class="h-full pb-16 overflow-y-auto">
@@ -686,10 +585,6 @@
             <h2 class="page-title">
                 Daftar Absen
             </h2>
-
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
 
             <!-- Filter Form -->
             <div class="form-section">
@@ -703,8 +598,16 @@
                         <label for="end_date" class="form-label">Tanggal Akhir</label>
                         <input type="date" class="form-control" id="end_date" name="end_date">
                     </div>
-                    <div class="form-col form-col-md-4 d-flex align-items-end">
-                        <button type="button" id="filterButton" class="btn btn-primary">Tampilkan Data</button>
+                    <div class="form-col form-col-md-4">
+                        <!-- Empty column for layout balance -->
+                    </div>
+                    <div class="form-col form-col-md-12">
+                        <div class="d-flex gap-2">
+                            <button type="button" id="filterButton" class="btn btn-primary">Tampilkan Data</button>
+                            <button type="button" id="exportExcel" class="btn btn-secondary ms-3">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -717,12 +620,10 @@
                         <thead>
                             <tr>
                                 <th>Nama Karyawan</th>
-                                <th>Kategori Izin</th>
                                 <th>Tanggal</th>
                                 <th>Jam Masuk</th>
                                 <th>Jam Keluar</th>
                                 <th>Status</th>
-                                <th>Alasan</th>
                                 <th>Gambar</th>
                                 <th>Aksi</th>
                             </tr>
@@ -742,6 +643,7 @@
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script>
         $(document).ready(function() {
             // Initialize DataTable with empty data
@@ -749,9 +651,6 @@
                 "data": [],
                 "columns": [{
                         "data": "user_name"
-                    },
-                    {
-                        "data": "kategori_izin"
                     },
                     {
                         "data": "tanggal"
@@ -766,9 +665,6 @@
                         "data": "status"
                     },
                     {
-                        "data": "alasan"
-                    },
-                    {
                         "data": "gambar",
                         "render": function(data, type, row) {
                             if (data) {
@@ -780,27 +676,129 @@
                         }
                     },
                     {
-                        "data": "actions"
+                        "data": "actions",
+                        "render": function(data, type, row) {
+                            return data;
+                        }
                     }
                 ],
                 "language": {
-                    "search": "",
-                    "lengthMenu": "Tampilkan _MENU_ data",
-                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    "search": "Cari:",
+                    "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                    "zeroRecords": "Tidak ada data yang ditemukan",
+                    "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    "infoEmpty": "Tidak ada data tersedia",
+                    "infoFiltered": "(difilter dari _MAX_ total data)",
                     "paginate": {
-                        "first": "Awal",
-                        "last": "Akhir",
+                        "first": "Pertama",
+                        "last": "Terakhir",
                         "next": "Selanjutnya",
                         "previous": "Sebelumnya"
-                    },
-                    "zeroRecords": "Tidak ada data yang sesuai",
-                    "infoEmpty": "Menampilkan 0 data",
-                    "infoFiltered": "(disaring dari _MAX_ total data)"
+                    }
                 },
-                "lengthMenu": [5, 15, 25, 50, 100],
+                "lengthMenu": [10, 25, 50, 100],
                 "responsive": true,
-                "autoWidth": false
+                "order": [
+                    [2, 'desc']
+                ],
+                "dom": '<"top"lf>rt<"bottom"ip>',
+                "drawCallback": function() {
+                    $('.dataTables_paginate > .paginate_button').addClass('btn btn-sm');
+                    // Re-attach delete button handlers after table redraw
+                    attachDeleteHandlers();
+                }
             });
+
+            // Function to attach delete handlers
+            function attachDeleteHandlers() {
+                $('.delete-absen').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    const deleteUrl = $(this).attr('href');
+
+                    Swal.fire({
+                        title: 'Konfirmasi Hapus',
+                        text: 'Apakah Anda yakin ingin menghapus data absen ini?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal',
+                        background: '#1e1e1e',
+                        color: '#f3f4f6',
+                        customClass: {
+                            popup: 'dark-swal',
+                            title: 'text-white',
+                            content: 'text-gray-300',
+                            confirmButton: 'bg-red-500 hover:bg-red-600',
+                            cancelButton: 'bg-gray-500 hover:bg-gray-600'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: deleteUrl,
+                                type: 'DELETE',
+                                data: {
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function(response) {
+                                    if (response.success) {
+                                        // Show success toast
+                                        const Toast = Swal.mixin({
+                                            toast: true,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 1000,
+                                            timerProgressBar: true,
+                                            didOpen: (toast) => {
+                                                toast.addEventListener(
+                                                    'mouseenter', Swal
+                                                    .stopTimer)
+                                                toast.addEventListener(
+                                                    'mouseleave', Swal
+                                                    .resumeTimer)
+                                            }
+                                        });
+
+                                        Toast.fire({
+                                            icon: 'success',
+                                            title: response.message
+                                        }).then(() => {
+                                            // Reload the page after toast disappears
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error',
+                                            text: response.message,
+                                            icon: 'error',
+                                            background: '#1e1e1e',
+                                            color: '#f3f4f6'
+                                        });
+                                    }
+                                },
+                                error: function(xhr) {
+                                    let errorMessage =
+                                        'Terjadi kesalahan saat menghapus data';
+                                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                                        errorMessage = xhr.responseJSON.message;
+                                    }
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: errorMessage,
+                                        icon: 'error',
+                                        background: '#1e1e1e',
+                                        color: '#f3f4f6'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Initial attachment of delete handlers
+            attachDeleteHandlers();
 
             // Handle filter button click
             $('#filterButton').on('click', function() {
@@ -834,6 +832,86 @@
                     }
                 });
             });
+
+            // Function to export table data to Excel
+            function exportToExcel() {
+                const startDate = $('#start_date').val();
+                const endDate = $('#end_date').val();
+
+                if (!startDate || !endDate) {
+                    alert('Silakan pilih tanggal mulai dan tanggal akhir terlebih dahulu!');
+                    return;
+                }
+
+                // Show loading indicator
+                $('#absenTable').addClass('loading');
+
+                // Fetch data for export
+                $.ajax({
+                    url: '{{ route('absen.filter') }}',
+                    type: 'GET',
+                    data: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    success: function(response) {
+                        // Prepare data for Excel
+                        const excelData = response.map(row => ({
+                            'Nama': row.user_name || '',
+                            'Tanggal': row.tanggal || '',
+                            'Jam Masuk': row.jam_masuk || '',
+                            'Jam Keluar': row.jam_keluar || '',
+                            'Status': row.status || ''
+                        }));
+
+                        if (excelData.length === 0) {
+                            alert('Tidak ada data untuk diekspor pada rentang tanggal tersebut');
+                            $('#absenTable').removeClass('loading');
+                            return;
+                        }
+
+                        // Create worksheet
+                        const ws = XLSX.utils.json_to_sheet(excelData);
+
+                        // Set column widths
+                        const colWidths = [{
+                                wch: 20
+                            }, // Nama
+                            {
+                                wch: 15
+                            }, // Tanggal
+                            {
+                                wch: 15
+                            }, // Jam Masuk
+                            {
+                                wch: 15
+                            }, // Jam Keluar
+                            {
+                                wch: 15
+                            } // Status
+                        ];
+                        ws['!cols'] = colWidths;
+
+                        // Create workbook
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, 'Data Absensi');
+
+                        // Generate Excel file name with date range
+                        const fileName = `Data_Absensi_${startDate}_sampai_${endDate}.xlsx`;
+
+                        // Save file
+                        XLSX.writeFile(wb, fileName);
+                        $('#absenTable').removeClass('loading');
+                    },
+                    error: function() {
+                        alert('Terjadi kesalahan saat mengekspor data');
+                        $('#absenTable').removeClass('loading');
+                    }
+                });
+            }
+
+            // Bind export button click event
+            $('#exportExcel').on('click', exportToExcel);
         });
     </script>
 @endsection

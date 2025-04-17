@@ -11,8 +11,8 @@ use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
-
-
+use App\Models\Absen;
+use App\Models\Izin;
 
 class AuthController extends Controller
 {
@@ -47,7 +47,10 @@ class AuthController extends Controller
             'role' => $validated['role'],
         ]);
 
-        return redirect()->to('/register')->with('success', 'Registrasi berhasil! Silakan login.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Registrasi berhasil!'
+        ]);
     }
 
     public function loginproses(Request $request)
@@ -85,7 +88,7 @@ class AuthController extends Controller
 
         Karyawan::create($request->all());
 
-        return back()->with('success', 'Data karyawan berhasil disimpan!');
+        return back()->with('success', 'Data berhasil disimpan!');
     }
 
     public function destroykaryawan($id)
@@ -93,11 +96,11 @@ class AuthController extends Controller
         $karyawan = Karyawan::find($id);
 
         if (!$karyawan) {
-            return response()->json(['message' => 'Data karyawan tidak ditemukan'], 404);
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
         $karyawan->delete();
-        return response()->json(['message' => 'Data karyawan berhasil dihapus']);
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
     public function userdestroy($id)
@@ -110,7 +113,7 @@ class AuthController extends Controller
 
         $user->delete();
 
-        return response()->json(['message' => 'User berhasil dihapus']);
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
 
@@ -131,15 +134,14 @@ class AuthController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($user_id, 'user_id'), // Sesuaikan primary key
+                Rule::unique('users', 'email')->ignore($user_id, 'user_id'),
             ],
-            'password' => 'nullable|min:6', // Password boleh kosong, jika diisi validasi minimal 6 karakter
-            'role' => 'required|in:karyawan,admin', // Validasi role
+            'password' => 'nullable|min:6',
+            'role' => 'required|in:karyawan,admin',
         ]);
 
         // Ambil data user berdasarkan user_id
         $user = User::where('user_id', $user_id)->firstOrFail();
-        // Gunakan user_id sesuai primary key
 
         // Update data user
         $user->name = $request->name;
@@ -153,7 +155,10 @@ class AuthController extends Controller
         $user->role = $request->role;
         $user->save();
 
-        return redirect('/register')->with('success', 'Data pengguna berhasil diperbarui.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pengguna berhasil diperbarui'
+        ]);
     }
 
     public function logout(Request $request)
@@ -164,5 +169,105 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login')->with('success', 'Anda telah logout.');
+    }
+
+    public function dashboard()
+    {
+        // Total Users
+        $totalUsers = User::count();
+
+        // Total Karyawan
+        $totalKaryawan = Karyawan::count();
+
+        // Total Absen Hari Ini
+        $totalAbsen = Absen::whereDate('tanggal', now()->toDateString())->count();
+
+        // Total Izin
+        $totalIzin = Izin::count();
+
+        // Rekap Harian
+        $rekapHarian = [
+            'hadir' => Absen::whereDate('tanggal', now()->toDateString())
+                ->where('status', 'hadir')
+                ->count(),
+            'izin' => Absen::whereDate('tanggal', now()->toDateString())
+                ->where('status', 'izin')
+                ->count(),
+            'sakit' => Absen::whereDate('tanggal', now()->toDateString())
+                ->where('status', 'sakit')
+                ->count(),
+            'alpha' => Absen::whereDate('tanggal', now()->toDateString())
+                ->where('status', 'alpha')
+                ->count()
+        ];
+
+        // Rekap Mingguan
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+
+        $rekapMingguan = [
+            'hadir' => Absen::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                ->where('status', 'hadir')
+                ->count(),
+            'izin' => Absen::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                ->where('status', 'izin')
+                ->count(),
+            'sakit' => Absen::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                ->where('status', 'sakit')
+                ->count(),
+            'alpha' => Absen::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                ->where('status', 'alpha')
+                ->count()
+        ];
+
+        // Calculate percentages safely
+        $totalHarian = array_sum($rekapHarian);
+        $totalMingguan = array_sum($rekapMingguan);
+
+        // Calculate daily percentages
+        $persentaseHarian = [
+            'hadir' => $totalHarian > 0 ? ($rekapHarian['hadir'] / $totalHarian) * 100 : 0,
+            'izin' => $totalHarian > 0 ? ($rekapHarian['izin'] / $totalHarian) * 100 : 0,
+            'sakit' => $totalHarian > 0 ? ($rekapHarian['sakit'] / $totalHarian) * 100 : 0,
+            'alpha' => $totalHarian > 0 ? ($rekapHarian['alpha'] / $totalHarian) * 100 : 0
+        ];
+
+        // Calculate weekly percentages
+        $persentaseMingguan = [
+            'hadir' => $totalMingguan > 0 ? ($rekapMingguan['hadir'] / $totalMingguan) * 100 : 0,
+            'izin' => $totalMingguan > 0 ? ($rekapMingguan['izin'] / $totalMingguan) * 100 : 0,
+            'sakit' => $totalMingguan > 0 ? ($rekapMingguan['sakit'] / $totalMingguan) * 100 : 0,
+            'alpha' => $totalMingguan > 0 ? ($rekapMingguan['alpha'] / $totalMingguan) * 100 : 0
+        ];
+
+        // Calculate attendance percentage
+        $persentaseKehadiran = $totalKaryawan > 0 ? ($rekapHarian['hadir'] / $totalKaryawan) * 100 : 0;
+
+        // Absensi Terbaru
+        $absensiTerbaru = Absen::with('user')
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('jam_masuk', 'desc')
+            ->take(5)
+            ->get();
+
+        // Izin Terbaru
+        $izinTerbaru = Izin::with(['user', 'kategoriIzin'])
+            ->orderBy('tanggal_mulai', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalKaryawan',
+            'totalAbsen',
+            'totalIzin',
+            'rekapHarian',
+            'rekapMingguan',
+            'persentaseHarian',
+            'persentaseMingguan',
+            'persentaseKehadiran',
+            'absensiTerbaru',
+            'izinTerbaru'
+        ));
     }
 }

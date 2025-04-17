@@ -597,6 +597,107 @@
         .flex-wrap {
             flex-wrap: wrap;
         }
+
+        /* DataTables Styling */
+        div.dataTables_wrapper {
+            margin-bottom: 20px;
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        div.dataTables_wrapper div.dataTables_length select {
+            width: auto;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 250px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        div.dataTables_wrapper div.dataTables_length,
+        div.dataTables_wrapper div.dataTables_filter,
+        div.dataTables_wrapper div.dataTables_info,
+        div.dataTables_wrapper div.dataTables_paginate {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary) !important;
+            margin: 0 3px;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button.current {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: white !important;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button:hover:not(.current) {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* SweetAlert2 Custom Styling */
+        .swal2-popup {
+            background-color: var(--dark-section) !important;
+            color: var(--text-primary) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .swal2-title {
+            color: var(--text-primary) !important;
+        }
+
+        .swal2-timer-progress-bar {
+            background: var(--success) !important;
+        }
+
+        .swal2-icon.swal2-success {
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        .swal2-icon.swal2-success .swal2-success-ring {
+            border-color: var(--success) !important;
+        }
+
+        .swal2-icon.swal2-success [class^="swal2-success-line"] {
+            background-color: var(--success) !important;
+        }
+
+        .swal2-icon.swal2-error {
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+        }
+
+        .swal2-icon.swal2-error [class^="swal2-x-mark-line"] {
+            background-color: var(--danger) !important;
+        }
     </style>
 
     <main class="h-full pb-16 overflow-y-auto">
@@ -605,20 +706,27 @@
                 Kategori Izin
             </h2>
 
-            @if (session('success'))
+            {{-- @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif --}}
 
             <!-- Form Tambah Pengguna -->
             <div class="form-section">
                 <h2 class="section-header">Tambah Kategori Izin</h2>
                 <form action="/kategori-izin/store" method="POST">
                     @csrf
-                    <label class="form-label" for="nama_kategori">Nama Kategori</label>
-                    <input type="text" id="nama_kategori" name="nama_kategori" class="form-control" required>
-
-                    <label class="form-label" for="deskripsi">Deskripsi</label>
-                    <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4"></textarea>
+                    <div class="mb-3">
+                        <label class="form-label" for="nama_kategori">Nama Kategori</label>
+                        <input type="text" id="nama_kategori" name="nama_kategori" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="deskripsi">Deskripsi</label>
+                        <textarea id="deskripsi" name="deskripsi" class="form-control" rows="4"></textarea>
+                    </div>
 
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
@@ -629,7 +737,7 @@
             <div class="table-section">
                 <h2 class="section-header">Daftar Kategori Izin</h2>
                 <div class="table-responsive">
-                    <table id="kategoriIzinTable" class="table table-bordered">
+                    <table id="kategoriIzinTable" class="table">
                         <thead>
                             <tr>
                                 <th>Nama Kategori</th>
@@ -648,22 +756,19 @@
                                     <td>{{ $izin->updated_at->format('d M Y') }}</td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-2">
-                                            <a href="{{ url('/kategori-izin/edit/' . $izin->detail_izin_id) }}"
+                                            <a href="{{ route('kategori-izin.edit', $izin->detail_izin_id) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <form action="{{ route('kategori-izin.destroy', $izin->detail_izin_id) }}"
-                                                method="POST" class="d-inline">
+                                                method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-danger btn-sm" type="submit"
-                                                    onclick="return confirm('Yakin ingin menghapus?')">
+                                                <button class="btn btn-danger btn-sm delete-btn" type="button">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
-
                                         </div>
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -682,22 +787,91 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#kategoriIzinTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "language": {
-                    "search": "Cari:",
-                    "lengthMenu": "Tampilkan _MENU_ entri",
-                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
-                    "infoFiltered": "(disaring dari _MAX_ total entri)",
-                    "zeroRecords": "Tidak ada data yang cocok",
-                    "paginate": {
-                        "first": "Pertama",
-                        "last": "Terakhir",
-                        "next": "Selanjutnya",
-                        "previous": "Sebelumnya"
+            // SweetAlert2 Configuration
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            // Show success message if exists
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('success') }}'
+                });
+            @endif
+
+            // Show error message if exists
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            // Delete Confirmation
+            $('.delete-btn').click(function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+                const namaKategori = $(this).closest('tr').find('td:first').text();
+
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    html: `Apakah Anda yakin ingin menghapus kategori <strong>${namaKategori}</strong>?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                    background: 'var(--dark-section)',
+                    color: 'var(--text-primary)',
+                    customClass: {
+                        popup: 'swal2-popup',
+                        title: 'swal2-title',
+                        content: 'swal2-content',
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
                     }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
+            // DataTables Configuration
+            $('#kategoriIzinTable').DataTable({
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    zeroRecords: "Tidak ada data yang ditemukan",
+                    info: "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    infoEmpty: "Tidak ada data tersedia",
+                    infoFiltered: "(difilter dari _MAX_ total data)",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
+                    }
+                },
+                responsive: true,
+                order: [
+                    [2, 'desc']
+                ], // Sort by created_at
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                dom: '<"top"lf>rt<"bottom"ip>',
+                drawCallback: function() {
+                    $('.dataTables_paginate > .paginate_button').addClass('btn btn-sm');
                 }
             });
         });

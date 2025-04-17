@@ -193,6 +193,29 @@
                 width: 100%;
             }
         }
+
+        /* Password input group styling */
+        .password-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .password-input-group .form-control {
+            padding-right: 35px;
+        }
     </style>
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid">
@@ -208,7 +231,7 @@
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
-                <form action="{{ route('user.updatepengguna', $user->user_id) }}" method="POST">
+                <form id="editUserForm" action="{{ route('user.updatepengguna', $user->user_id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -226,7 +249,12 @@
 
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control">
+                        <div class="password-input-group">
+                            <input type="password" name="password" class="form-control" id="edit_password">
+                            <span class="password-toggle" onclick="togglePassword('edit_password')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
                         <small class="text-muted">Biarkan kosong jika tidak ingin mengubah password</small>
                     </div>
 
@@ -261,9 +289,76 @@
 
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function() {
-            // Any initialization code can go here
+        // Konfigurasi default SweetAlert2
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#1e1e1e',
+            color: '#fff',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
         });
+
+        // Handle form submission
+        document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Data user berhasil diperbarui'
+                        });
+                        setTimeout(() => {
+                            window.location.href = '/register';
+                        }, 1000);
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: data.message || 'Terjadi kesalahan saat memperbarui user'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan saat memperbarui user'
+                    });
+                });
+        });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 @endsection

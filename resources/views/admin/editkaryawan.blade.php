@@ -431,3 +431,76 @@
         </div>
     </main>
 @endsection
+
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to show success toast
+        function showSuccessToast(message) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                background: '#1e1e1e',
+                color: '#f3f4f6',
+                iconColor: '#10b981',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: message
+            });
+        }
+
+        // Function to show error toast
+        function showErrorToast(message) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                background: '#1e1e1e',
+                color: '#f3f4f6',
+                iconColor: '#ef4444',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'error',
+                title: message
+            });
+        }
+
+        // Handle form submission
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const formData = form.serialize();
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    showSuccessToast(response.message || 'Data berhasil diperbarui');
+                    setTimeout(() => {
+                        window.location.href = '/karyawan';
+                    }, 1000);
+                },
+                error: function(xhr) {
+                    showErrorToast(xhr.responseJSON.message || 'Terjadi kesalahan');
+                }
+            });
+        });
+    </script>
+@endsection

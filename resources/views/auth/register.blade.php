@@ -419,6 +419,116 @@
         .flex-wrap {
             flex-wrap: wrap;
         }
+
+        .dark-swal {
+            background-color: #1e1e1e !important;
+        }
+
+        .dark-swal-title {
+            color: #fff !important;
+        }
+
+        .dark-swal-content {
+            color: #fff !important;
+        }
+
+        .dark-swal-confirm {
+            background-color: #d33 !important;
+        }
+
+        .dark-swal-cancel {
+            background-color: #3085d6 !important;
+        }
+
+        .swal2-timer-progress-bar {
+            background: #6366f1 !important;
+        }
+
+        /* Password input group styling */
+        .password-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .password-input-group .form-control {
+            padding-right: 35px;
+        }
+
+        /* DataTables Styling */
+        div.dataTables_wrapper {
+            margin-bottom: 20px;
+            background-color: var(--dark-section);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        div.dataTables_wrapper div.dataTables_length select {
+            width: auto;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input {
+            width: 250px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-left: 10px;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        div.dataTables_wrapper div.dataTables_length,
+        div.dataTables_wrapper div.dataTables_filter,
+        div.dataTables_wrapper div.dataTables_info,
+        div.dataTables_wrapper div.dataTables_paginate {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: var(--dark-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary) !important;
+            margin: 0 3px;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button.current {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: white !important;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate .paginate_button:hover:not(.current) {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--text-primary) !important;
+        }
     </style>
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto grid">
@@ -427,13 +537,23 @@
             </h2>
 
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    {{ session('error') }}
+                </div>
             @endif
 
             <!-- Form Section -->
             <div class="form-section">
                 <h2 class="section-header">Tambah Pengguna</h2>
-                <form action="{{ route('register.store') }}" method="POST">
+                <form id="registerForm" action="{{ route('register.store') }}" method="POST">
                     @csrf
                     <div class="form-row">
                         <div class="form-col form-col-md-6">
@@ -450,12 +570,23 @@
                     <div class="form-row">
                         <div class="form-col form-col-md-6">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <div class="password-input-group">
+                                <input type="password" name="password" class="form-control" id="password" required>
+                                <span class="password-toggle" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="form-col form-col-md-6">
                             <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <div class="password-input-group">
+                                <input type="password" name="password_confirmation" class="form-control"
+                                    id="password_confirmation" required>
+                                <span class="password-toggle" onclick="togglePassword('password_confirmation')">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -478,9 +609,9 @@
 
             <!-- Table Section -->
             <div class="table-section">
-                <h2 class="section-header">Daftars User</h2>
+                <h2 class="section-header">Daftar User</h2>
                 <div class="table-responsive">
-                    <table id="karyawanTable" class="table table-bordered">
+                    <table id="karyawanTable" class="table">
                         <thead>
                             <tr>
                                 <th>Nama</th>
@@ -497,8 +628,10 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ ucfirst($user->role) }}</td>
-                                    <td>{{ $user->created_at->format('d M Y') }}</td>
-                                    <td>{{ $user->updated_at->format('d M Y') }}</td>
+                                    <td>{{ $user->created_at ? Carbon\Carbon::parse($user->created_at)->format('d M Y') : '-' }}
+                                    </td>
+                                    <td>{{ $user->updated_at ? Carbon\Carbon::parse($user->updated_at)->format('d M Y') : '-' }}
+                                    </td>
                                     <td>
                                         <div class="d-flex flex-wrap">
                                             <a href="{{ url('/editregister/' . $user->user_id) }}"
@@ -524,27 +657,92 @@
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Konfigurasi default SweetAlert2
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#1e1e1e',
+            color: '#fff',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Data user berhasil ditambahkan'
+                        });
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: data.message || 'Terjadi kesalahan saat menambahkan user'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan saat menambahkan user'
+                    });
+                });
+        });
+
         $(document).ready(function() {
             $('#karyawanTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "language": {
-                    "search": "Cari:",
-                    "lengthMenu": "Tampilkan _MENU_ entri",
-                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
-                    "infoFiltered": "(disaring dari _MAX_ total entri)",
-                    "zeroRecords": "Tidak ada data yang cocok",
-                    "paginate": {
-                        "first": "Pertama",
-                        "last": "Terakhir",
-                        "next": "Selanjutnya",
-                        "previous": "Sebelumnya"
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    zeroRecords: "Tidak ada data yang ditemukan",
+                    info: "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    infoEmpty: "Tidak ada data tersedia",
+                    infoFiltered: "(difilter dari _MAX_ total data)",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
                     }
+                },
+                responsive: true,
+                order: [
+                    [3, 'desc']
+                ], // Sort by tanggal_daftar
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                dom: '<"top"lf>rt<"bottom"ip>',
+                drawCallback: function() {
+                    $('.dataTables_paginate > .paginate_button').addClass('btn btn-sm');
                 }
             });
         });
+
         //HANDEL HAPUS USER
         document.addEventListener('DOMContentLoaded', function() {
             const deleteButtons = document.querySelectorAll('.delete');
@@ -555,27 +753,74 @@
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute(
                         'content');
 
-                    if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-                        fetch(url, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': token
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                alert(data.message);
-                                // Reload halaman atau hapus baris user dari tabel
-                                location.reload();
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Terjadi kesalahan saat menghapus user.');
-                            });
-                    }
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data user akan dihapus secara permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal',
+                        background: '#1e1e1e',
+                        color: '#fff',
+                        customClass: {
+                            popup: 'dark-swal',
+                            title: 'dark-swal-title',
+                            content: 'dark-swal-content',
+                            confirmButton: 'dark-swal-confirm',
+                            cancelButton: 'dark-swal-cancel'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(url, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': token
+                                    }
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    Toast.fire({
+                                        icon: 'success',
+                                        title: 'Data user berhasil dihapus'
+                                    });
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Toast.fire({
+                                        icon: 'error',
+                                        title: 'Terjadi kesalahan saat menghapus user'
+                                    });
+                                });
+                        }
+                    });
                 });
             });
         });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 @endsection

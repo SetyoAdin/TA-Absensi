@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\KategoriIzinController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +31,15 @@ Route::get('/login', function () {
 Route::middleware(['auth'])->get('/absen', function () {
     $user = Auth::user();
     $karyawan = Karyawan::where('user_id', $user->user_id)->first();
+
+    // If karyawan doesn't exist, create a default one
+    if (!$karyawan) {
+        $karyawan = new Karyawan();
+        $karyawan->user_id = $user->user_id;
+        $karyawan->posisi = 'Posisi belum diatur';
+        $karyawan->departemen = 'Departemen belum diatur';
+        $karyawan->save();
+    }
 
     return view('user.absen', compact('karyawan'));
 });
@@ -54,11 +64,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan');
     Route::post('/karyawan', [AuthController::class, 'insertkaryawan'])->name('karyawan.insertkaryawan');
     Route::post('/register', [AuthController::class, 'register'])->name('register.store');
-    Route::post('/kategori-izin/store', [AbsenController::class, 'store'])->name('kategori-izin.store');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/editkaryawan/{id}', [KaryawanController::class, 'edit'])->name('edit.karyawan');
     Route::get('/editregister/{id}', [AuthController::class, 'edit'])->name('user.edit');
-    Route::get('/kategori', [AbsenController::class, 'kategori'])->name('kategori');
     Route::get('/dataabsen', [AbsenController::class, 'dataabsen'])->name('dataabsen');
     Route::get('/absen/filter', [AbsenController::class, 'filter'])->name('absen.filter');
     Route::get('/absen/{id}/edit', [AbsenController::class, 'edit'])->name('absen.edit');
@@ -69,12 +77,32 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/hapus-user/{id}', [AuthController::class, 'userdestroy'])->name('hapus-user');
 
     Route::delete('/hapus-karyawan/{id}', [AuthController::class, 'destroykaryawan']);
-    Route::delete('/kategori-izin/{id}', [AbsenController::class, 'kategoriDestroy'])->name('kategori-izin.destroy');
+
 
 
     //ROUTE UNTUK EDIT
     Route::put('/updatekaryawan/{user_id}', [KaryawanController::class, 'updatekaryawan'])->name('karyawan.updatekaryawan');
     Route::put('/updatepengguna/{user_id}', [AuthController::class, 'updatepengguna'])->name('user.updatepengguna');
+
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+
+    Route::get('/absen', [AbsenController::class, 'index'])->name('absen');
+    Route::post('/absen/datang', [AbsenController::class, 'absenDatang'])->name('absen.datang');
+    Route::post('/absen/pulang', [AbsenController::class, 'absenPulang'])->name('absen.pulang');
+    Route::post('/absen/izin', [AbsenController::class, 'ajukanIzin'])->name('absen.izin');
+    Route::get('/absen/histori', [AbsenController::class, 'histori'])->name('absen.histori');
+
+    Route::get('/izin-manajemen', [AbsenController::class, 'izinManajemen'])->name('izin.manajemen');
+    Route::post('/izin/filter', [AbsenController::class, 'izinFilter'])->name('izin.filter');
+    Route::put('/izin/{izin_id}', [AbsenController::class, 'izinUpdate'])->name('izin.update');
+    Route::delete('/izin/{izin_id}', [AbsenController::class, 'izinDestroy'])->name('izin.destroy');
+
+    //KATEGORI IZIN 
+    Route::post('/kategori-izin/store', [KategoriIzinController::class, 'store'])->name('kategori-izin.store');
+    Route::get('/kategori-izin/edit/{id}', [KategoriIzinController::class, 'edit'])->name('kategori-izin.edit');
+    Route::put('/kategori-izin/update/{id}', [KategoriIzinController::class, 'update'])->name('kategori-izin.update');
+    Route::delete('/kategori-izin/{id}', [KategoriIzinController::class, 'kategoriDestroy'])->name('kategori-izin.destroy');
+    Route::get('/kategori', [KategoriIzinController::class, 'kategori'])->name('kategori');
 });
 
 

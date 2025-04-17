@@ -1,13 +1,8 @@
 <div class="d-flex gap-2">
     <a href="{{ route('absen.edit', $absen->absen_id) }}" class="btn btn-sm btn-warning">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-pencil-alt"></i>
     </a>
-    <form action="{{ route('absen.destroy', $absen->absen_id) }}" method="POST"
-        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-sm btn-danger">
-            <i class="fas fa-trash"></i>
-        </button>
-    </form>
+    <a href="{{ route('absen.destroy', $absen->absen_id) }}" class="btn btn-sm btn-danger delete-absen">
+        <i class="fas fa-trash"></i>
+    </a>
 </div>
